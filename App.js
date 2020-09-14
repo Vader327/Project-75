@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { Image } from 'react-native';
 import { createAppContainer } from 'react-navigation';
@@ -22,7 +21,7 @@ const tabNavigator = createBottomTabNavigator({
       return (<Image source={require('./assets/write.png')}
       style={focused ? {width: 33, height: 33} : {width: 23, height: 23}} />)
     }
-  }}), initialRouteName: "Write Story"
+  }})
 })
 
 const AppContainer = createAppContainer(tabNavigator);

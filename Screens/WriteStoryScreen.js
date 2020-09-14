@@ -1,14 +1,43 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableWithoutFeedback, Keyboard, TouchableHighlight } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableWithoutFeedback, Keyboard, TouchableHighlight, Alert } from 'react-native';
 import { Header } from 'react-native-elements';
+import * as firebase from 'firebase';
+import db from '../config';
 
 export default class WriteStoryScreen extends React.Component {
   constructor(){
     super();
     this.state={
       submitFocus: false,
+      title: '',
+      author: '',
+      story: "",
     }
   }
+
+  submitStory=()=>{
+    if(this.state.title.trim() !== '' && this.state.author.trim() !== '' && this.state.story.trim() !== ''){
+      db.collection('stories').add({
+        'title': this.state.title,
+        'author': this.state.author,
+        'story': this.state.story,
+        'date': firebase.firestore.Timestamp.now().toDate(),
+      })
+      this.setState({title: '', author: '', story: ""});
+
+      Alert.alert("Thank you for submitting a story!");
+    }
+    if(this.state.title.trim() === ''){
+      Alert.alert("Please enter a story title!");
+    }
+    if(this.state.author.trim() === ''){
+      Alert.alert("Please enter the author name!");
+    }
+    if(this.state.story.trim() === ''){
+      Alert.alert("Please enter your story!");
+    }
+  }
+
   render(){
     return (
       <View style={{height: '100%'}}>
@@ -23,13 +52,18 @@ export default class WriteStoryScreen extends React.Component {
             }}} />
           <TouchableWithoutFeedback style={{flex: 1}} onPress={Keyboard.dismiss}>
             <View>
-              <TextInput style={styles.input} placeholder="Story Title" />
-              <TextInput style={styles.input} placeholder="Author" />            
-              <TextInput style={styles.input} placeholder="Write your story" multiline={true}  />
+              <TextInput style={styles.input} placeholder="Story Title"
+              value={this.state.title} onChangeText={(text)=>{this.setState({title: text})}} />
+
+              <TextInput style={styles.input} placeholder="Author"
+              value={this.state.author} onChangeText={(text)=>{this.setState({author: text})}} />            
+
+              <TextInput style={styles.input} placeholder="Write your story" multiline={true}
+              value={this.state.story} onChangeText={(text)=>{this.setState({story: text})}} />
             </View>
           </TouchableWithoutFeedback>
 
-          <TouchableHighlight style={styles.submit} underlayColor='#03b898' onPress={()=>{}}
+          <TouchableHighlight style={styles.submit} underlayColor='#03b898' onPress={this.submitStory}
           onShowUnderlay={()=>{this.setState({submitFocus: true})}}
           onHideUnderlay={()=>{this.setState({submitFocus: false})}}>
             <Text style={this.state.submitFocus ? [styles.submitText, {color: '#ffffff'}] : styles.submitText}>
