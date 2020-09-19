@@ -19,9 +19,10 @@ const tabNavigator = createBottomTabNavigator({
     }
     else if(routeName == 'Write Story'){
       return (<Image source={require('./assets/write.png')}
-      style={focused ? {width: 33, height: 33} : {width: 23, height: 23}} />)
+      style={focused ? {width: 33, height: 33} : {width: 24, height: 24}} />)
     }
-  }})
+  }}),
+  tabBarOptions:{activeTintColor: "#03b898"}
 })
 
 const AppContainer = createAppContainer(tabNavigator);

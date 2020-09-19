@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableWithoutFeedback, Keyboard, TouchableHighlight, Alert, KeyboardAvoidingView, ToastAndroid } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableWithoutFeedback, Keyboard, TouchableHighlight, Alert, KeyboardAvoidingView, ToastAndroid, Platform } from 'react-native';
 import { Header } from 'react-native-elements';
 import * as firebase from 'firebase';
 import db from '../config';
@@ -58,7 +58,7 @@ export default class WriteStoryScreen extends React.Component {
         <Header
         containerStyle={{backgroundColor: '#03b898',}}
         centerComponent={{
-          text: "Story Hub",
+          text: "Bedtime Stories",
           style:{
             color: "#ffffff",
             fontSize: 24,
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
   input:{
     borderBottomColor: '#03b898',
     borderBottomWidth: 3,
-    width: 300,
+    width: '90%',
     marginTop: 30,
     alignSelf: 'center',
     fontSize: 18,
