@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { Header, SearchBar } from 'react-native-elements';
 import db from '../config';
 
@@ -10,16 +10,18 @@ export default class ReadStoryScreen extends React.Component {
       allStories: [],
       dataSource: [],
       search: "",
+      lastVisibleStory: null,
     }
   }
 
   retriveStories=async()=>{
-    var allStories= [];
-    var storiesRef = await db.collection('stories').get();
-    storiesRef.docs.map(doc=>{
-      allStories.push(doc.data());
+    var storiesRef = await db.collection('stories').startAfter(this.state.lastVisibleStory).limit(7).get();
+    storiesRef.docs.map((doc)=>{
+      this.setState({
+        allStories: [...this.state.allStories, doc.data()],
+        lastVisibleStory: doc
+      })
     });
-    this.setState({allStories: allStories});
   }
 
   filterSearch=(searchText)=>{
@@ -29,8 +31,23 @@ export default class ReadStoryScreen extends React.Component {
     this.setState({dataSource: results, search: searchText}); 
   }
 
-  componentDidMount=()=>{
-    this.retriveStories();
+  getAllStories=async()=>{
+    var allStories = [];
+    var storiesRef = await db.collection('stories').get();
+    storiesRef.docs.map((doc)=>{
+      allStories.push(doc.data())
+    });
+    this.setState({allStories: allStories})
+  }
+
+  componentDidMount=async()=>{
+    var storiesRef = await db.collection('stories').limit(7).get();
+    storiesRef.docs.map((doc)=>{
+      this.setState({
+        allStories: [...this.state.allStories, doc.data()],
+        lastVisibleStory: doc,
+      })
+    });
   }
 
   render(){
@@ -52,24 +69,21 @@ export default class ReadStoryScreen extends React.Component {
         inputStyle={{color:'#000000'}}
         onChangeText={(text)=>{this.filterSearch(text)}} value={this.state.search} />
 
-        <ScrollView contentContainerStyle={{paddingBottom: 20}}>
-          {this.state.search == ""
-          ? this.state.allStories.map((data, index)=>(
-              <View style={styles.container} key={index}>
-                <Text style={styles.title}>{data.title}</Text>
-                <Text style={styles.author}>Author: {data.author}</Text>
-              </View>))
-
-          : this.state.dataSource.map((data, index)=>(
-            <View style={styles.container} key={index}>
-              <Text style={styles.title}>{data.title}</Text>
-              <Text style={styles.author}>Author: {data.author}</Text>
-            </View>))
-          }
-          <TouchableOpacity style={styles.submit} onPress={this.retriveStories}>
-            <Text style={styles.submitText}>Refresh</Text>
-          </TouchableOpacity>
-        </ScrollView>
+        <FlatList keyExtractor={(item, index)=>index.toString()}
+        onEndReached={this.retriveStories}
+        onEndReachedThreshold={0.7}
+        data={this.state.search=="" ? this.state.allStories : this.state.dataSource}
+        ListFooterComponent={()=>(
+        <TouchableOpacity style={styles.submit} onPress={this.getAllStories}>
+          <Text style={styles.submitText}>Refresh</Text>
+        </TouchableOpacity>
+        )}
+        renderItem={({item, index})=>(
+          <View style={styles.container} key={index.toString()}>
+            <Text style={styles.title}>{item.title}</Text>
+            <Text style={styles.author}>Author: {item.author}</Text>
+          </View>
+        )} />      
       </View>    
     );
   }
@@ -102,6 +116,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 7,
     marginTop: 20,
+    marginBottom: 20,
   },
   submitText:{
     fontSize: 18,

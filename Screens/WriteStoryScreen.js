@@ -54,7 +54,6 @@ export default class WriteStoryScreen extends React.Component {
   render(){
     return (
       <KeyboardAvoidingView behavior="padding" enabled style={{height: '100%', flex:1}}>
-
         <Header
         containerStyle={{backgroundColor: '#03b898',}}
         centerComponent={{
@@ -66,16 +65,16 @@ export default class WriteStoryScreen extends React.Component {
         }}} />
 
         <TouchableWithoutFeedback style={{flex: 1}} onPress={Keyboard.dismiss}>
-			<View style={{height:'100%'}}>
-				<TextInput style={styles.input} placeholder="Story Title"
-				value={this.state.title} onChangeText={(text)=>{this.setState({title: text})}} />
+        <View style={{height:'100%'}}>
+          <TextInput style={styles.input} placeholder="Story Title"
+          value={this.state.title} onChangeText={(text)=>{this.setState({title: text})}} />
 
-				<TextInput style={styles.input} placeholder="Author"
-				value={this.state.author} onChangeText={(text)=>{this.setState({author: text})}} />            
+          <TextInput style={styles.input} placeholder="Author"
+          value={this.state.author} onChangeText={(text)=>{this.setState({author: text})}} />            
 
-				<TextInput style={styles.input} placeholder="Write your story" multiline={true}
-				value={this.state.story} onChangeText={(text)=>{this.setState({story: text})}} />         
-			</View>
+          <TextInput style={styles.input} placeholder="Write your story" multiline={true}
+          value={this.state.story} onChangeText={(text)=>{this.setState({story: text})}} />         
+        </View>
         </TouchableWithoutFeedback>		
 
         <TouchableHighlight style={styles.submit} underlayColor='#03b898' onPress={this.submitStory}
