@@ -1,9 +1,10 @@
 import React from 'react';
 import { Image } from 'react-native';
-import { createAppContainer } from 'react-navigation';
+import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import ReadStoryScreen from './Screens/ReadStoryScreen';
 import WriteStoryScreen from './Screens/WriteStoryScreen';
+import LoginScreen from './Screens/LoginScreen';
 
 const tabNavigator = createBottomTabNavigator({
   "Read Story": {screen: ReadStoryScreen},
@@ -25,7 +26,12 @@ const tabNavigator = createBottomTabNavigator({
   tabBarOptions:{activeTintColor: "#03b898"}
 })
 
-const AppContainer = createAppContainer(tabNavigator);
+const switchNavigator = createSwitchNavigator({
+  Login: {screen: LoginScreen},
+  "Tab Navigator": {screen: tabNavigator},
+})
+
+const AppContainer = createAppContainer(switchNavigator);
 
 export default class App extends React.Component {
   render(){
